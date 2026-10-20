@@ -1,0 +1,6 @@
+@JAT.API_HostAddress = http://localhost:5082
+
+GET {{JAT.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
