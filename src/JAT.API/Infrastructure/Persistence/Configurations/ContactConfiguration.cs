@@ -11,7 +11,7 @@ namespace JAT.API.Infrastructure.Persistence.Configurations
             builder
                 .HasOne(c => c.Company)
                 .WithOne(c => c.Contact)
-                .HasForeignKey<Company>(c => c.ContactId);
+                .HasForeignKey<Contact>(c => c.CompanyId);
 
             builder.Property(c => c.Name)
                 .HasMaxLength(100);

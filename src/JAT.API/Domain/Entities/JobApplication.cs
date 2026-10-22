@@ -12,8 +12,8 @@ namespace JAT.API.Domain.Entities
         public string? Notes { get; set; }
         public JobApplicationStatus Status { get; set; }
         public string? Url { get; set; }
-        public DateTimeOffset AppliedAtUtc { get; set; }
-        public DateTimeOffset LastActivityAtUtc { get; set; }
+        public DateTimeOffset AppliedAt { get; set; }
+        public DateTimeOffset LastActivityAt { get; set; }
 
         public decimal SalaryMin { get; set; }
         public decimal SalaryMax { get; set; }
