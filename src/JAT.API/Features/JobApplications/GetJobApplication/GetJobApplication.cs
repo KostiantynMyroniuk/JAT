@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Asp.Versioning;
+using FluentValidation;
 using JAT.API.Common.Abstractions;
 using JAT.API.Domain.Entities;
 using JAT.API.Domain.Enums;
@@ -42,7 +43,8 @@ namespace JAT.API.Features.JobApplications.GetJobApplication
                     .WithDescription("Returns the job application with its tags")
                     .WithTags("JobApplications")
                     .Produces<Response>()
-                    .ProducesProblem(StatusCodes.Status404NotFound);
+                    .ProducesProblem(StatusCodes.Status404NotFound)
+                    .MapToApiVersion(new ApiVersion(2, 0));
             }
         }
 

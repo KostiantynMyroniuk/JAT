@@ -1,4 +1,5 @@
-﻿using JAT.API.Infrastructure.Persistence;
+﻿using Asp.Versioning;
+using JAT.API.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
