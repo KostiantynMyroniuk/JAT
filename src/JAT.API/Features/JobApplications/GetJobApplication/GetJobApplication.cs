@@ -1,4 +1,5 @@
-﻿using JAT.API.Common.Abstractions;
+﻿using FluentValidation;
+using JAT.API.Common.Abstractions;
 using JAT.API.Domain.Entities;
 using JAT.API.Domain.Enums;
 using JAT.API.Infrastructure.Persistence;
@@ -8,10 +9,10 @@ namespace JAT.API.Features.JobApplications.GetJobApplication
 {
     public class GetJobApplication
     {
-        public sealed record GetJobApplicationRequest(Guid ApplicationId);
+        public sealed record Request(Guid ApplicationId);
 
         public sealed record TagResponse(Guid Id, string Name);
-        public sealed record GetJobApplicationResponse(
+        public sealed record Response(
             Guid Id,
             string Title,
             string? Notes,
@@ -19,33 +20,44 @@ namespace JAT.API.Features.JobApplications.GetJobApplication
             string? Url,
             DateTimeOffset AppliedAt,
             DateTimeOffset LastActivityAt,
-            decimal SalaryMin,
-            decimal SalaryMax,
+            decimal? SalaryMin,
+            decimal? SalaryMax,
             IEnumerable<TagResponse> Tags);
 
-        public sealed class GetJobApplicationEndpoint : IEndpoint
+        public sealed class Validator : AbstractValidator<Request>
+        {
+            public Validator()
+            {
+                RuleFor(a => a.ApplicationId).NotEmpty();
+            }
+        }
+
+        public sealed class Endpoint : IEndpoint
         {
             public void MapEndpoint(IEndpointRouteBuilder app)
             {
-                app.MapGet("api/applications/{applicationId:guid}", Handle)
+                app.MapGet("/applications/{applicationId:guid}", HandleAsync)
                     .WithName("GetJobApplication")
                     .WithSummary("Get job application by id")
                     .WithDescription("Returns the job application with its tags")
                     .WithTags("JobApplications")
-                    .Produces<GetJobApplicationResponse>()
+                    .Produces<Response>()
                     .ProducesProblem(StatusCodes.Status404NotFound);
             }
         }
 
-        private static async Task<IResult> Handle(
-            [AsParameters] GetJobApplicationRequest request,
+        private static async Task<IResult> HandleAsync(
+            [AsParameters] Request request,
+            IValidator<Request> validator,
             ApplicationDbContext context,
             CancellationToken ct)
         {
+            await validator.ValidateAndThrowAsync(request, ct);
+
             var response = await context.JobApplications
                 .AsNoTracking()
                 .Where(a => a.Id == request.ApplicationId)
-                .Select(a => new GetJobApplicationResponse(
+                .Select(a => new Response(
                     a.Id,
                     a.Title,
                     a.Notes,

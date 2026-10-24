@@ -15,8 +15,8 @@ namespace JAT.API.Domain.Entities
         public DateTimeOffset AppliedAt { get; set; }
         public DateTimeOffset LastActivityAt { get; set; }
 
-        public decimal SalaryMin { get; set; }
-        public decimal SalaryMax { get; set; }
+        public decimal? SalaryMin { get; set; }
+        public decimal? SalaryMax { get; set; }
 
         private readonly List<Tag> _tags  = [];
         public IReadOnlyList<Tag> Tags => _tags;

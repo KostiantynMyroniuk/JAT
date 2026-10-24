@@ -1,3 +1,4 @@
+using FluentValidation;
 using JAT.API.Extensions;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Text.Json.Serialization;
@@ -11,7 +12,8 @@ builder.Services
     .AddOpenApi()
     .AddPersistence(builder.Configuration)
     .AddHealthChecks(builder.Configuration)
-    .AddEndpoints(typeof(Program).Assembly);
+    .AddEndpoints(typeof(Program).Assembly)
+    .AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 var app = builder.Build();
 
