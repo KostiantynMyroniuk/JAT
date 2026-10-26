@@ -35,7 +35,7 @@ namespace JAT.API.Domain.Entities
 
             var tag = new Tag()
             {
-                Name = name
+                Name = normalized
             };
 
             _tags.Add(tag);

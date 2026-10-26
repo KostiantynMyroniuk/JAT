@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JAT.API.Features.JobApplications
 {
-    public class UpdateApplication
+    public static class UpdateApplication
     {
         public sealed record Request(
             string Title,
@@ -55,7 +55,8 @@ namespace JAT.API.Features.JobApplications
                     .WithSummary("Update job application record")
                     .WithDescription("Updates job application record")
                     .WithTags("JobApplications")
-                    .WithValidation<Request>();
+                    .WithValidation<Request>()
+                    .Produces(StatusCodes.Status204NoContent);
             }
         }
 

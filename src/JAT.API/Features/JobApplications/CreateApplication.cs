@@ -7,7 +7,7 @@ using JAT.API.Infrastructure.Persistence;
 
 namespace JAT.API.Features.JobApplications
 {
-    public class CreateApplication
+    public static class CreateApplication
     {
         public sealed record Request(
             string Title,
@@ -58,7 +58,7 @@ namespace JAT.API.Features.JobApplications
                     .WithDescription("Creates job application record")
                     .WithTags("JobApplications")
                     .WithValidation<Request>()
-                    .Produces<Response>();
+                    .Produces<Response>(StatusCodes.Status201Created);
             }
         }
 

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JAT.API.Features.JobApplications
 {
-    public class GetApplication
+    public static class GetApplication
     {
         public sealed record Request(Guid ApplicationId);
 
@@ -45,7 +45,7 @@ namespace JAT.API.Features.JobApplications
                     .WithDescription("Returns the job application with its tags")
                     .WithTags("JobApplications")
                     .WithValidation<Request>()
-                    .Produces<Response>()
+                    .Produces<Response>(StatusCodes.Status200OK)
                     .ProducesProblem(StatusCodes.Status404NotFound);
             }
         }

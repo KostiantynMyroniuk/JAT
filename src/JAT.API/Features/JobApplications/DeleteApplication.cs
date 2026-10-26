@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JAT.API.Features.JobApplications
 {
-    public class DeleteApplication
+    public static class DeleteApplication
     {
         public sealed record Request(Guid ApplicationId);
 
@@ -28,7 +28,8 @@ namespace JAT.API.Features.JobApplications
                     .WithSummary("Delete job application record")
                     .WithDescription("Deletes job application record")
                     .WithTags("JobApplications")
-                    .WithValidation<Request>();
+                    .WithValidation<Request>()
+                    .Produces(StatusCodes.Status204NoContent);
             }
         }
 

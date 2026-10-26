@@ -8,6 +8,8 @@ namespace JAT.API.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Tag> builder)
         {
+            builder.HasIndex(a => a.Name).IsUnique();
+
             builder.Property(t => t.Name)
                 .HasMaxLength(50);
         }
