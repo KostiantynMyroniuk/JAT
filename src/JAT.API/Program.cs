@@ -15,7 +15,8 @@ builder.Services
     .AddHealthChecks(builder.Configuration)
     .AddEndpoints(typeof(Program).Assembly)
     .AddVersioning()
-    .AddValidatorsFromAssembly(typeof(Program).Assembly);
+    .AddProblemDetails()
+    .AddValidatorsFromAssemblyContaining<Program>();
 
 var app = builder.Build();
 

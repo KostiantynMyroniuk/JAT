@@ -2,9 +2,10 @@
 using JAT.API.Common.Abstractions;
 using JAT.API.Domain.Entities;
 using JAT.API.Domain.Enums;
+using JAT.API.Filters;
 using JAT.API.Infrastructure.Persistence;
 
-namespace JAT.API.Features.JobApplications.CreateJobApplication
+namespace JAT.API.Features.JobApplications
 {
     public class CreateJobApplication
     {
@@ -56,18 +57,16 @@ namespace JAT.API.Features.JobApplications.CreateJobApplication
                     .WithSummary("Create job application record")
                     .WithDescription("Creates job application record")
                     .WithTags("JobApplications")
+                    .WithValidation<Request>()
                     .Produces<Response>();
             }
         }
 
         private static async Task<IResult> HandleAsync(
             Request request,
-            IValidator<Request> validator,
             ApplicationDbContext context,
             CancellationToken ct)
         {
-            await validator.ValidateAndThrowAsync(request, ct);
-
             var application = new JobApplication()
             {
                 Title = request.Title,

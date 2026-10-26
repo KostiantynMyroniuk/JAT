@@ -2,7 +2,7 @@
 
 namespace JAT.API.Extensions
 {
-    public static class VersioningExtensions
+    public static class VersioningExtension
     {
         public static IServiceCollection AddVersioning(this IServiceCollection services)
         {

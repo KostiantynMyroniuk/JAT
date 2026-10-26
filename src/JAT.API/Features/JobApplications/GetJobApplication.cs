@@ -3,10 +3,11 @@ using FluentValidation;
 using JAT.API.Common.Abstractions;
 using JAT.API.Domain.Entities;
 using JAT.API.Domain.Enums;
+using JAT.API.Filters;
 using JAT.API.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace JAT.API.Features.JobApplications.GetJobApplication
+namespace JAT.API.Features.JobApplications
 {
     public class GetJobApplication
     {
@@ -42,20 +43,17 @@ namespace JAT.API.Features.JobApplications.GetJobApplication
                     .WithSummary("Get job application by id")
                     .WithDescription("Returns the job application with its tags")
                     .WithTags("JobApplications")
+                    .WithValidation<Request>()
                     .Produces<Response>()
                     .ProducesProblem(StatusCodes.Status404NotFound)
-                    .MapToApiVersion(new ApiVersion(2, 0));
             }
         }
 
         private static async Task<IResult> HandleAsync(
             [AsParameters] Request request,
-            IValidator<Request> validator,
             ApplicationDbContext context,
             CancellationToken ct)
         {
-            await validator.ValidateAndThrowAsync(request, ct);
-
             var response = await context.JobApplications
                 .AsNoTracking()
                 .Where(a => a.Id == request.ApplicationId)
