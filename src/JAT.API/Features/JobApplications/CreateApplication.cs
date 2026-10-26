@@ -82,7 +82,7 @@ namespace JAT.API.Features.JobApplications
             context.JobApplications.Add(application);
             await context.SaveChangesAsync(ct);
 
-            return Results.Created(
+            return TypedResults.Created(
                 $"api/applications/{application.Id}",
                 new Response(application.Id));
         }

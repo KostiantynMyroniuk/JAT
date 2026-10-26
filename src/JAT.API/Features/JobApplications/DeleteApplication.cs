@@ -41,7 +41,7 @@ namespace JAT.API.Features.JobApplications
                 .Where(a => a.Id == request.ApplicationId)
                 .ExecuteDeleteAsync(ct);
 
-            return Results.NoContent();
+            return TypedResults.NoContent();
         }
     }
 }

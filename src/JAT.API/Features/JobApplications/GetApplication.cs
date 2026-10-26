@@ -5,6 +5,7 @@ using JAT.API.Domain.Entities;
 using JAT.API.Domain.Enums;
 using JAT.API.Filters;
 using JAT.API.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace JAT.API.Features.JobApplications
@@ -45,7 +46,7 @@ namespace JAT.API.Features.JobApplications
                     .WithTags("JobApplications")
                     .WithValidation<Request>()
                     .Produces<Response>()
-                    .ProducesProblem(StatusCodes.Status404NotFound)
+                    .ProducesProblem(StatusCodes.Status404NotFound);
             }
         }
 
@@ -73,11 +74,10 @@ namespace JAT.API.Features.JobApplications
                 .FirstOrDefaultAsync(ct);
 
             if (response == null)
-                return Results.Problem(
-                    statusCode: StatusCodes.Status404NotFound,
-                    title: "Job application not found");
+                return TypedResults.NotFound<ProblemDetails>(new() {
+                    Detail = $"Application: {request.ApplicationId} not found" });
 
-            return Results.Ok(response);
+            return TypedResults.Ok(response);
         }
     }
 }
