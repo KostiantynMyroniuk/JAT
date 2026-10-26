@@ -7,7 +7,7 @@ using JAT.API.Infrastructure.Persistence;
 
 namespace JAT.API.Features.JobApplications
 {
-    public class CreateJobApplication
+    public class CreateApplication
     {
         public sealed record Request(
             string Title,

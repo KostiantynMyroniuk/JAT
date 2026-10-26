@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JAT.API.Features.JobApplications
 {
-    public class GetJobApplication
+    public class GetApplication
     {
         public sealed record Request(Guid ApplicationId);
 
