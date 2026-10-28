@@ -3,8 +3,8 @@
     public class Contact
     {
         public Guid Id { get; set; }
-        public Guid CompanyId { get; set; }
-        public Company Company { get; set; } = default!;
+        public Guid JobApplicationId { get; set; }
+        public JobApplication JobApplication { get; set; } = default!;
 
         public string Name { get; set; } = default!;
         public string Email { get; set; } = default!;

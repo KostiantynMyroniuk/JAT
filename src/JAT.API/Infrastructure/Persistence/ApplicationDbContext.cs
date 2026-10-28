@@ -9,7 +9,6 @@ namespace JAT.API.Infrastructure.Persistence
         public DbSet<Interview> Interviews { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-        public DbSet<Company> Companies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -23,38 +23,19 @@ namespace JAT.API.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("JAT.API.Domain.Entities.Company", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ContactId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Companies", "jat");
-                });
-
             modelBuilder.Entity("JAT.API.Domain.Entities.Contact", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("JobApplicationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LinkedIn")
                         .HasMaxLength(200)
@@ -67,7 +48,7 @@ namespace JAT.API.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId")
+                    b.HasIndex("JobApplicationId")
                         .IsUnique();
 
                     b.ToTable("Contacts", "jat");
@@ -112,7 +93,7 @@ namespace JAT.API.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset>("AppliedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid>("CompanyId")
+                    b.Property<Guid>("ContactId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("LastActivityAt")
@@ -142,8 +123,6 @@ namespace JAT.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
 
                     b.ToTable("JobApplications", "jat");
                 });
@@ -184,13 +163,13 @@ namespace JAT.API.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("JAT.API.Domain.Entities.Contact", b =>
                 {
-                    b.HasOne("JAT.API.Domain.Entities.Company", "Company")
+                    b.HasOne("JAT.API.Domain.Entities.JobApplication", "JobApplication")
                         .WithOne("Contact")
-                        .HasForeignKey("JAT.API.Domain.Entities.Contact", "CompanyId")
+                        .HasForeignKey("JAT.API.Domain.Entities.Contact", "JobApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
+                    b.Navigation("JobApplication");
                 });
 
             modelBuilder.Entity("JAT.API.Domain.Entities.Interview", b =>
@@ -202,17 +181,6 @@ namespace JAT.API.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("JobApplication");
-                });
-
-            modelBuilder.Entity("JAT.API.Domain.Entities.JobApplication", b =>
-                {
-                    b.HasOne("JAT.API.Domain.Entities.Company", "Company")
-                        .WithMany("JobApplications")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("JobApplicationTag", b =>
@@ -230,16 +198,11 @@ namespace JAT.API.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("JAT.API.Domain.Entities.Company", b =>
+            modelBuilder.Entity("JAT.API.Domain.Entities.JobApplication", b =>
                 {
                     b.Navigation("Contact")
                         .IsRequired();
 
-                    b.Navigation("JobApplications");
-                });
-
-            modelBuilder.Entity("JAT.API.Domain.Entities.JobApplication", b =>
-                {
                     b.Navigation("Interviews");
                 });
 #pragma warning restore 612, 618

@@ -5,8 +5,8 @@ namespace JAT.API.Domain.Entities
     public class JobApplication
     {
         public Guid Id { get; set; }
-        public Guid CompanyId { get; set; }
-        public Company Company { get; set; } = default!;
+        public Guid ContactId { get; set; }
+        public Contact Contact { get; set; } = default!;
 
         public string Title { get; set; } = default!;
         public string? Notes { get; set; }

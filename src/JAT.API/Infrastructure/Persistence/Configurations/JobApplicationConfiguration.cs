@@ -15,6 +15,12 @@ namespace JAT.API.Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder
+                .HasOne(a => a.Contact)
+                .WithOne(c => c.JobApplication)
+                .HasForeignKey<Contact>(c => c.JobApplicationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder
                 .HasMany(a => a.Tags)
                 .WithMany();
 
