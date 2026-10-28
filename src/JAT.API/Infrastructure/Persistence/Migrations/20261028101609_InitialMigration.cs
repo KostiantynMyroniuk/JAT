@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace JAT.API.Infrastructure.Persistence
+namespace JAT.API.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration
@@ -78,8 +78,7 @@ namespace JAT.API.Infrastructure.Persistence
                     AppliedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastActivityAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     SalaryMin = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
-                    SalaryMax = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
-                    CompanyId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    SalaryMax = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -91,12 +90,6 @@ namespace JAT.API.Infrastructure.Persistence
                         principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_JobApplications_Companies_CompanyId1",
-                        column: x => x.CompanyId1,
-                        principalSchema: "jat",
-                        principalTable: "Companies",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -168,12 +161,6 @@ namespace JAT.API.Infrastructure.Persistence
                 schema: "jat",
                 table: "JobApplications",
                 column: "CompanyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_JobApplications_CompanyId1",
-                schema: "jat",
-                table: "JobApplications",
-                column: "CompanyId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JobApplicationTag_TagsId",

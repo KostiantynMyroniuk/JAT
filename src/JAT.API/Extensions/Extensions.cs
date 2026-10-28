@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using JAT.API.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Swashbuckle.AspNetCore.Swagger;
@@ -19,6 +20,24 @@ namespace JAT.API.Extensions
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(connectionString, sql => sql.EnableRetryOnFailure());
+            });
+
+            return services;
+        }
+
+        public static IServiceCollection AddOpenApiOptions(this IServiceCollection services)
+        {
+            services.AddOpenApi(options =>
+            {
+                options.CreateSchemaReferenceId = typeInfo =>
+                {
+                    var type = typeInfo.Type;
+
+                    if (type.DeclaringType is not null && !type.IsGenericType)
+                        return $"{type.DeclaringType.Name}.{type.Name}";
+
+                    return OpenApiOptions.CreateDefaultSchemaReferenceId(typeInfo);
+                };
             });
 
             return services;

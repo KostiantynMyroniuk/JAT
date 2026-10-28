@@ -1,6 +1,8 @@
 using FluentValidation;
 using JAT.API.Extensions;
+using JAT.API.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,11 +16,19 @@ builder.Services
     .AddPersistence(builder.Configuration)
     .AddHealthChecks(builder.Configuration)
     .AddEndpoints(typeof(Program).Assembly)
+    .AddOpenApiOptions()
     .AddVersioning()
     .AddProblemDetails()
     .AddValidatorsFromAssemblyContaining<Program>();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await context.Database.MigrateAsync();
+}
 
 app.MapHealthChecks();
 

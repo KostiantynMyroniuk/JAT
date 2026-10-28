@@ -4,16 +4,19 @@ using JAT.API.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace JAT.API.Infrastructure.Persistence
+namespace JAT.API.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261028101609_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,9 +118,6 @@ namespace JAT.API.Infrastructure.Persistence
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CompanyId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTimeOffset>("LastActivityAt")
                         .HasColumnType("datetimeoffset");
 
@@ -147,8 +147,6 @@ namespace JAT.API.Infrastructure.Persistence
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("CompanyId1");
 
                     b.ToTable("JobApplications", "jat");
                 });
@@ -212,14 +210,10 @@ namespace JAT.API.Infrastructure.Persistence
             modelBuilder.Entity("JAT.API.Domain.Entities.JobApplication", b =>
                 {
                     b.HasOne("JAT.API.Domain.Entities.Company", "Company")
-                        .WithMany()
+                        .WithMany("JobApplications")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("JAT.API.Domain.Entities.Company", null)
-                        .WithMany("JobApplications")
-                        .HasForeignKey("CompanyId1");
 
                     b.Navigation("Company");
                 });

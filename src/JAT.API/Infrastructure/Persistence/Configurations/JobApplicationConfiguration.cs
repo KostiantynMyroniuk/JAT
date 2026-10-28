@@ -9,12 +9,6 @@ namespace JAT.API.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<JobApplication> builder)
         {
             builder
-                .HasOne(a => a.Company)
-                .WithMany()
-                .HasForeignKey(a => a.CompanyId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder
                 .HasMany(a => a.Interviews)
                 .WithOne(i => i.JobApplication)
                 .HasForeignKey(i => i.JobApplicationId)
