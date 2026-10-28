@@ -29,16 +29,9 @@ namespace JAT.API.Domain.Entities
             Id = Guid.CreateVersion7();
         }
 
-        public void AddTag(string name)
+        public void SetTags(List<Tag> tags)
         {
-            var normalized = name.Trim();
-
-            var tag = new Tag()
-            {
-                Name = normalized
-            };
-
-            _tags.Add(tag);
+            _tags.AddRange(tags);
         }
     }
 }
