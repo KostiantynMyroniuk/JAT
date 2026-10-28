@@ -25,7 +25,7 @@ namespace JAT.API.Features.JobApplications
             DateTimeOffset LastActivityAt,
             decimal? SalaryMin,
             decimal? SalaryMax,
-            IEnumerable<TagResponse> Tags);
+            IReadOnlyList<TagResponse> Tags);
 
         public sealed class Validator : AbstractValidator<Request>
         {
@@ -70,7 +70,8 @@ namespace JAT.API.Features.JobApplications
                     a.SalaryMax,
                     a.Tags
                         .OrderBy(t => t.Name)
-                        .Select(t => new TagResponse(t.Id, t.Name))))
+                        .Select(t => new TagResponse(t.Id, t.Name))
+                        .ToList()))
                 .FirstOrDefaultAsync(ct);
 
             if (response == null)
