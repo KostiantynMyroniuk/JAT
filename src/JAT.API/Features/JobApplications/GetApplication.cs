@@ -3,6 +3,7 @@ using FluentValidation;
 using JAT.API.Common.Abstractions;
 using JAT.API.Domain.Entities;
 using JAT.API.Domain.Enums;
+using JAT.API.Features.JobApplications.Dtos;
 using JAT.API.Filters;
 using JAT.API.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -13,19 +14,6 @@ namespace JAT.API.Features.JobApplications
     public static class GetApplication
     {
         public sealed record Request(Guid ApplicationId);
-
-        public sealed record TagResponse(Guid Id, string Name);
-        public sealed record Response(
-            Guid Id,
-            string Title,
-            string? Notes,
-            JobApplicationStatus Status,
-            string? Url,
-            DateTimeOffset AppliedAt,
-            DateTimeOffset LastActivityAt,
-            decimal? SalaryMin,
-            decimal? SalaryMax,
-            IReadOnlyList<TagResponse> Tags);
 
         public sealed class Validator : AbstractValidator<Request>
         {
@@ -45,7 +33,7 @@ namespace JAT.API.Features.JobApplications
                     .WithDescription("Returns the job application with its tags")
                     .WithTags("JobApplications")
                     .WithValidation<Request>()
-                    .Produces<Response>(StatusCodes.Status200OK)
+                    .Produces<JobApplicationDto>(StatusCodes.Status200OK)
                     .ProducesProblem(StatusCodes.Status404NotFound);
             }
         }
@@ -58,19 +46,18 @@ namespace JAT.API.Features.JobApplications
             var response = await context.JobApplications
                 .AsNoTracking()
                 .Where(a => a.Id == request.ApplicationId)
-                .Select(a => new Response(
+                .Select(a => new JobApplicationDto(
                     a.Id,
                     a.Title,
                     a.Notes,
                     a.Status,
                     a.Url,
                     a.AppliedAt,
-                    a.LastActivityAt,
                     a.SalaryMin,
                     a.SalaryMax,
                     a.Tags
                         .OrderBy(t => t.Name)
-                        .Select(t => new TagResponse(t.Id, t.Name))
+                        .Select(t => new JobApplicationTagDto(t.Id, t.Name))
                         .ToList()))
                 .FirstOrDefaultAsync(ct);
 

@@ -11,6 +11,8 @@ namespace JAT.API.Domain.Entities
         public string? Notes { get; set; }
         public JobApplicationStatus Status { get; set; }
         public string? Url { get; set; }
+
+        public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset? AppliedAt { get; set; }
 
         public decimal? SalaryMin { get; set; }
@@ -25,6 +27,7 @@ namespace JAT.API.Domain.Entities
         public JobApplication()
         {
             Id = Guid.CreateVersion7();
+            CreatedAt = DateTimeOffset.Now;
         }
 
         public void SetTags(List<Tag> tags)
