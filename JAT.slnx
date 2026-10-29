@@ -2,9 +2,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".env" />
     <File Path="Directory.Packages.props" />
+    <File Path="docker-compose.yml" />
   </Folder>
-  <Project Path="docker-compose.dcproj">
-    <Build />
-  </Project>
   <Project Path="src/JAT.API/JAT.API.csproj" Id="c6ae3f9c-bb44-4570-8d8e-474d58c413a9" />
 </Solution>

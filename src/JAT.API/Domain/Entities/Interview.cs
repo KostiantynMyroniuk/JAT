@@ -9,7 +9,7 @@ namespace JAT.API.Domain.Entities
         public JobApplication JobApplication { get; set; } = default!;
 
         public InterviewType InterviewType { get; set; }
-        public DateTimeOffset SchleduledAt { get; set; }
+        public DateTimeOffset ScheduledAt { get; set; }
         public string? Location { get; set; }
         public string? Notes { get; set; }
 

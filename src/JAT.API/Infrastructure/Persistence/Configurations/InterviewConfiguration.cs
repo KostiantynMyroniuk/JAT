@@ -8,16 +8,14 @@ namespace JAT.API.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Interview> builder)
         {
-            builder
-                .HasOne(i => i.JobApplication)
-                .WithMany(a => a.Interviews)
-                .HasForeignKey(i => i.JobApplicationId);
-
             builder.Property(i => i.Location)
                 .HasMaxLength(200);
 
             builder.Property(i => i.Notes)
                 .HasMaxLength(500);
+
+            builder.Property(i => i.InterviewType)
+                .HasConversion<string>();
         }
     }
 }

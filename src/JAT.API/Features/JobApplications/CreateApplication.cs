@@ -25,7 +25,7 @@ namespace JAT.API.Features.JobApplications
             public Validator(TimeProvider timeProvider)
             {
                 RuleFor(a => a.Title).NotEmpty().MaximumLength(100);
-                RuleFor(a => a.Notes).MaximumLength(500);
+                RuleFor(a => a.Notes).MaximumLength(2000);
                 RuleFor(a => a.Status).IsInEnum();
 
                 RuleFor(a => a.Url)
@@ -74,7 +74,6 @@ namespace JAT.API.Features.JobApplications
                 Status = request.Status,
                 Url = request.Url,
                 AppliedAt = request.AppliedAt,
-                LastActivityAt = request.AppliedAt,
                 SalaryMin = request.SalaryMin,
                 SalaryMax = request.SalaryMax
             };
@@ -82,9 +81,10 @@ namespace JAT.API.Features.JobApplications
             context.JobApplications.Add(application);
             await context.SaveChangesAsync(ct);
 
-            return TypedResults.Created(
-                $"api/applications/{application.Id}",
-                new Response(application.Id));
+            return TypedResults.CreatedAtRoute(
+                new Response(application.Id), 
+                "GetJobApplication", 
+                new { applicationId = application.Id });
         }
     }
 }

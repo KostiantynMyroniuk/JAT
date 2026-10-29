@@ -5,15 +5,13 @@ namespace JAT.API.Domain.Entities
     public class JobApplication
     {
         public Guid Id { get; set; }
-        public Guid ContactId { get; set; }
-        public Contact Contact { get; set; } = default!;
+        public Contact? Contact { get; set; } = default!;
 
         public string Title { get; set; } = default!;
         public string? Notes { get; set; }
         public JobApplicationStatus Status { get; set; }
         public string? Url { get; set; }
-        public DateTimeOffset AppliedAt { get; set; }
-        public DateTimeOffset LastActivityAt { get; set; }
+        public DateTimeOffset? AppliedAt { get; set; }
 
         public decimal? SalaryMin { get; set; }
         public decimal? SalaryMax { get; set; }

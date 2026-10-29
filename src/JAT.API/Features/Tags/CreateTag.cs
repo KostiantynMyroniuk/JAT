@@ -14,7 +14,7 @@ namespace JAT.API.Features.Tags
         public sealed record Request(string Name);
         public sealed record Response(Guid Id);
 
-        public class Validator : AbstractValidator<Request>
+        public sealed class Validator : AbstractValidator<Request>
         {
             public Validator()
             {
@@ -24,7 +24,7 @@ namespace JAT.API.Features.Tags
             }
         }
 
-        public class Endpoint : IEndpoint
+        public sealed class Endpoint : IEndpoint
         {
             public void MapEndpoint(IEndpointRouteBuilder app)
             {
@@ -57,9 +57,10 @@ namespace JAT.API.Features.Tags
                     Detail = $"Tag with name: {tag.Name} already exists" });
             }
 
-            return TypedResults.Created(
-                $"/tags/{tag.Id}",
-                new Response(tag.Id));
+            return TypedResults.CreatedAtRoute(
+                new Response(tag.Id),
+                "GetTag",
+                new { tag = tag.Id });
         }
     }
 }

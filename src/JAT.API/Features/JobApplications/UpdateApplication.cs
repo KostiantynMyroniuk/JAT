@@ -18,7 +18,7 @@ namespace JAT.API.Features.JobApplications
             decimal? SalaryMin,
             decimal? SalaryMax);
 
-        public class Validator : AbstractValidator<Request>
+        public sealed class Validator : AbstractValidator<Request>
         {
             public Validator(TimeProvider timeProvider)
             {
@@ -46,17 +46,18 @@ namespace JAT.API.Features.JobApplications
                 Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https";
         }
 
-        public class Endpoint : IEndpoint
+        public sealed class Endpoint : IEndpoint
         {
             public void MapEndpoint(IEndpointRouteBuilder app)
             {
-                app.MapPut("/applications/{applicationId}", HandleAsync)
+                app.MapPut("/applications/{applicationId:guid}", HandleAsync)
                     .WithName("UpdateJobApplication")
                     .WithSummary("Update job application record")
                     .WithDescription("Updates job application record")
                     .WithTags("JobApplications")
                     .WithValidation<Request>()
-                    .Produces(StatusCodes.Status204NoContent);
+                    .Produces(StatusCodes.Status204NoContent)
+                    .ProducesProblem(StatusCodes.Status404NotFound);
             }
         }
 

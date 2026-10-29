@@ -10,7 +10,7 @@ namespace JAT.API.Features.JobApplications
     {
         public sealed record Request(Guid ApplicationId);
 
-        public class Validator : AbstractValidator<Request>
+        public sealed class Validator : AbstractValidator<Request>
         {
             public Validator()
             {
@@ -19,7 +19,7 @@ namespace JAT.API.Features.JobApplications
             }
         }
 
-        public class Endpoint : IEndpoint
+        public sealed class Endpoint : IEndpoint
         {
             public void MapEndpoint(IEndpointRouteBuilder app)
             {

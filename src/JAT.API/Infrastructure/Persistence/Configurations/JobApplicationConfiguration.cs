@@ -27,8 +27,16 @@ namespace JAT.API.Infrastructure.Persistence.Configurations
             builder.Property(a => a.Title)
                 .HasMaxLength(100);
 
+            builder.Property(a => a.Url)
+                .HasMaxLength(200);
+
             builder.Property(a => a.Notes)
-                .HasMaxLength(500);
+                .HasMaxLength(2000);
+
+            builder.HasIndex(a => a.Status);
+
+            builder.Property(a => a.Status)
+                .HasConversion<string>();
 
             builder.Property(a => a.SalaryMin)
                 .HasPrecision(18, 2);
