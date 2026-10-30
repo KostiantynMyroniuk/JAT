@@ -1,5 +1,6 @@
 using FluentValidation;
 using JAT.API.Extensions;
+using JAT.API.Infrastructure.ExceptionHandling;
 using JAT.API.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -13,15 +14,18 @@ builder.Services.ConfigureHttpJsonOptions(o =>
     o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services
+    .AddExceptionHandler<GlobalExceptionHandler>()
+    .AddProblemDetails()
     .AddPersistence(builder.Configuration)
     .AddHealthChecks(builder.Configuration)
     .AddEndpoints(typeof(Program).Assembly)
     .AddOpenApiOptions()
     .AddVersioning()
-    .AddProblemDetails()
     .AddValidatorsFromAssemblyContaining<Program>();
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 if (app.Configuration.GetValue<bool>("Database:MigrateOnStart"))
 {
