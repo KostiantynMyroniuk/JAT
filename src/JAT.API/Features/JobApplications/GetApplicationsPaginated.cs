@@ -37,8 +37,8 @@ namespace JAT.API.Features.JobApplications
             {
                 app.MapGet("/applications", HandleAsync)
                     .WithName("GetApplicationsPaginated")
-                    .WithSummary("Get all applications records")
-                    .WithDescription("Gets all applications records with its tags")
+                    .WithSummary("Get applications records by pages")
+                    .WithDescription("Gets applications records with its tags by pages")
                     .WithTags("JobApplications")
                     .WithValidation<Request>()
                     .Produces<PaginatedList<JobApplicationDto>>(StatusCodes.Status200OK);

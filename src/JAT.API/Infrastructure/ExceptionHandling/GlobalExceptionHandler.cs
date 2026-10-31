@@ -15,7 +15,7 @@ namespace JAT.API.Infrastructure.ExceptionHandling
             };
 
             if (statusCode >= StatusCodes.Status500InternalServerError)
-                logger.LogError(exception, "Internal server error");
+                logger.LogError(exception, "Unhandled exception");
             else
                 logger.LogWarning("Handled exception: {Message}", exception.Message);
 
