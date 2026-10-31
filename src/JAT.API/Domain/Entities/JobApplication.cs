@@ -27,7 +27,7 @@ namespace JAT.API.Domain.Entities
         public JobApplication()
         {
             Id = Guid.CreateVersion7();
-            CreatedAt = DateTimeOffset.Now;
+            CreatedAt = DateTimeOffset.UtcNow;
         }
 
         public void SetTags(List<Tag> tags)
