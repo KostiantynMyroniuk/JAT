@@ -3,6 +3,7 @@ using FluentValidation;
 using JAT.API.Extensions;
 using JAT.API.Infrastructure.ExceptionHandling;
 using JAT.API.Infrastructure.Persistence;
+using JAT.API.Mcp;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +21,8 @@ builder.Services
     .AddOpenApiDocumentation()
     .AddVersioning()
     .AddEndpoints(typeof(Program).Assembly)
-    .AddValidatorsFromAssemblyContaining<Program>();
+    .AddValidatorsFromAssemblyContaining<Program>()
+    .AddMcpServices();
 
 var app = builder.Build();
 
@@ -38,5 +40,7 @@ app.MapCustomHealthChecks();
 app.MapVersionedApi();
 
 app.UseOpenApiDocumentation();
+
+app.UseMcpServer();
 
 app.Run();

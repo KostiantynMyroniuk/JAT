@@ -14,7 +14,7 @@ namespace JAT.API.Features.JobApplications
             string? Notes,
             JobApplicationStatus Status,
             string? Url,
-            DateTimeOffset AppliedAt,
+            DateTimeOffset? AppliedAt,
             decimal? SalaryMin,
             decimal? SalaryMax);
 

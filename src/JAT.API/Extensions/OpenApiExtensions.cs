@@ -28,7 +28,6 @@ namespace JAT.API.Extensions
             app.UseSwaggerUI(o =>
             {
                 o.SwaggerEndpoint("/openapi/v1.json", "v1");
-                o.SwaggerEndpoint("/openapi/v2.json", "v2");
             });
 
             return app;

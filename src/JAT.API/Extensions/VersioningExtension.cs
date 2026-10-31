@@ -27,8 +27,7 @@ namespace JAT.API.Extensions
             var versionedApi = app.NewVersionedApi("Jat");
 
             var api = versionedApi.MapGroup("/api/v{version:apiVersion}")
-                .HasApiVersion(new ApiVersion(1, 0))
-                .HasApiVersion(new ApiVersion(2, 0));
+                .HasApiVersion(new ApiVersion(1, 0));
 
             api.MapEndpoints();
 
