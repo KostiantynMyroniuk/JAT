@@ -4,7 +4,7 @@ namespace JAT.API.Domain.Entities
 {
     public class JobApplication
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; private set; }
         public Contact? Contact { get; set; } = default!;
 
         public string Title { get; set; } = default!;
@@ -12,7 +12,7 @@ namespace JAT.API.Domain.Entities
         public JobApplicationStatus Status { get; set; }
         public string? Url { get; set; }
 
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; private set; }
         public DateTimeOffset? AppliedAt { get; set; }
 
         public decimal? SalaryMin { get; set; }

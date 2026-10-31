@@ -4,7 +4,7 @@ namespace JAT.API.Domain.Entities
 {
     public class Interview
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; private set; }
         public Guid JobApplicationId { get; set; }
         public JobApplication JobApplication { get; set; } = default!;
 

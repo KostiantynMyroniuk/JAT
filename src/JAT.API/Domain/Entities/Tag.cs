@@ -1,9 +1,11 @@
-﻿namespace JAT.API.Domain.Entities
+﻿using JAT.API.Domain.Exceptions;
+
+namespace JAT.API.Domain.Entities
 {
     public class Tag
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = default!;
+        public Guid Id { get; private set; }
+        public string Name { get; private set; } = default!;
 
         public Tag()
         {
@@ -13,8 +15,6 @@
         public static Tag Create(string name)
         {
             var normalized = name.Trim().ToLowerInvariant();
-            if (normalized.Length == 0)
-                throw new ArgumentException("Tag name is required", nameof(name));
 
             return new Tag { Name = normalized };
         }
