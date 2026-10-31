@@ -1,7 +1,6 @@
-﻿using JAT.API.Common.Abstractions;
+using JAT.API.Common.Abstractions;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace JAT.API.Extensions
 {
@@ -11,7 +10,7 @@ namespace JAT.API.Extensions
         {
             var types = assembly.DefinedTypes
                 .Where(t => t is { IsAbstract: false, IsInterface: false } && t.IsAssignableTo(typeof(IEndpoint)))
-                .Select(t => ServiceDescriptor.Transient(typeof(IEndpoint), t))
+                .Select(t => ServiceDescriptor.Singleton(typeof(IEndpoint), t))
                 .ToArray();
 
             services.TryAddEnumerable(types);
