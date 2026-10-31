@@ -57,10 +57,9 @@ namespace JAT.API.Features.Tags
                     Detail = $"Tag with name: {tag.Name} already exists" });
             }
 
-            return TypedResults.CreatedAtRoute(
-                new Response(tag.Id),
-                "GetTag",
-                new { tag = tag.Id });
+            return TypedResults.Created(
+                "/tags",
+                new Response(tag.Id));
         }
     }
 }
