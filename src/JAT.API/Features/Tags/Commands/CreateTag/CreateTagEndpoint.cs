@@ -1,0 +1,52 @@
+using FluentValidation;
+using JAT.API.Common.Abstractions;
+using JAT.API.Common.Models;
+using JAT.API.Extensions;
+using JAT.API.Filters;
+
+namespace JAT.API.Features.Tags.Commands.CreateTag;
+
+public sealed record CreateTagRequest(string Name);
+
+public sealed class CreateTagValidator : AbstractValidator<CreateTagRequest>
+{
+    public CreateTagValidator()
+    {
+        RuleFor(t => t.Name)
+            .NotEmpty()
+            .MaximumLength(50);
+    }
+}
+
+public sealed class CreateTagEndpoint : IEndpoint
+{
+    public void MapEndpoint(IEndpointRouteBuilder app)
+    {
+        app.MapPost("/tags", HandleAsync)
+            .WithName("CreateTag")
+            .WithSummary("Create tag")
+            .WithTags("Tags")
+            .WithValidation<CreateTagRequest>()
+            .Produces<Guid>(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+    }
+
+    public static async Task<IResult> HandleAsync(
+        CreateTagRequest request,
+        IHandler<CreateTagCommand, Result<Guid>> handler,
+        CancellationToken ct)
+    {
+        var command = new CreateTagCommand(request.Name);
+        var result = await handler.HandleAsync(command, ct);
+
+        if (result.IsFailure)
+        {
+            return result.ToProblem();
+        }
+
+        return TypedResults.Created(
+            "/tags",
+            result.Value);
+    }
+}
