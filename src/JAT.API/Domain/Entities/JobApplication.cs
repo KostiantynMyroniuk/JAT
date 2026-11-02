@@ -1,4 +1,4 @@
-﻿using JAT.API.Domain.Enums;
+using JAT.API.Domain.Enums;
 
 namespace JAT.API.Domain.Entities
 {
@@ -18,7 +18,7 @@ namespace JAT.API.Domain.Entities
         public decimal? SalaryMin { get; set; }
         public decimal? SalaryMax { get; set; }
 
-        private readonly List<Tag> _tags  = [];
+        private readonly List<Tag> _tags = [];
         public IReadOnlyList<Tag> Tags => _tags;
 
         private readonly List<Interview> _interviews = [];
@@ -30,9 +30,28 @@ namespace JAT.API.Domain.Entities
             CreatedAt = DateTimeOffset.UtcNow;
         }
 
-        public void SetTags(List<Tag> tags)
+        public void SetTags(IEnumerable<Tag> tags)
         {
+            _tags.Clear();
             _tags.AddRange(tags);
+        }
+
+        public void Update(
+            string title,
+            string? notes,
+            JobApplicationStatus status,
+            string? url,
+            DateTimeOffset? appliedAt,
+            decimal? salaryMin,
+            decimal? salaryMax)
+        {
+            Title = title;
+            Notes = notes;
+            Status = status;
+            Url = url;
+            AppliedAt = appliedAt;
+            SalaryMin = salaryMin;
+            SalaryMax = salaryMax;
         }
     }
 }

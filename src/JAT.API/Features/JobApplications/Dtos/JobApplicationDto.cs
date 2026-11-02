@@ -1,5 +1,4 @@
-﻿using JAT.API.Domain.Enums;
-using static JAT.API.Features.JobApplications.GetApplication;
+using JAT.API.Domain.Enums;
 
 namespace JAT.API.Features.JobApplications.Dtos
 {

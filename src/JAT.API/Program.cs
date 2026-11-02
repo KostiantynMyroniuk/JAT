@@ -21,6 +21,7 @@ builder.Services
     .AddOpenApiDocumentation()
     .AddVersioning()
     .AddEndpoints(typeof(Program).Assembly)
+    .AddHandlers(typeof(Program).Assembly)
     .AddValidatorsFromAssemblyContaining<Program>()
     .AddMcpServices();
 
