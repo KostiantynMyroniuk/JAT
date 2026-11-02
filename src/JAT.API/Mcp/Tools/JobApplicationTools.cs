@@ -1,10 +1,9 @@
-﻿using JAT.API.Common.Models;
-using JAT.API.Domain.Entities;
+﻿using JAT.API.Common.Abstractions;
+using JAT.API.Common.Models;
 using JAT.API.Domain.Enums;
+using JAT.API.Features.JobApplications.Commands.CreateApplication;
 using JAT.API.Features.JobApplications.Dtos;
-using JAT.API.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using JAT.API.Features.JobApplications.Queries.GetApplicationsPaginated;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 using System.Text.Json;
@@ -17,46 +16,28 @@ namespace JAT.API.Mcp.Tools
         [McpServerTool(Name = "get_job_applications", ReadOnly = true)] 
         [Description("Gets paginated list of job applications with current statuses and tags")]
         public static async Task<string> GetApplications(
-            ApplicationDbContext context,
+            IHandler<GetApplicationsPaginatedQuery, Result<PaginatedList<JobApplicationDto>>> handler,
             CancellationToken ct,
             [Description("Page number, default = 1")] int pageNumber = 1,
             [Description("Page size, default = 10")] int pageSize = 10,
             [Description("Filter by status")] JobApplicationStatus? status = null)
         {
-            var query = context.JobApplications.AsNoTracking();
+            var query = new GetApplicationsPaginatedQuery(status, pageNumber, pageSize);
 
-            if (status.HasValue)
-                query = query.Where(a => a.Status == status);
+            var result = await handler.HandleAsync(query, ct);
 
-            var totalCount = await query.CountAsync(ct);
+            if (result.IsFailure)
+            {
+                return JsonSerializer.Serialize(new { error = result.Error?.Description });
+            }
 
-            var items = await query
-                .OrderBy(a => a.CreatedAt)
-                .ThenBy(a => a.Id)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(a => new JobApplicationDto(
-                    a.Id,
-                    a.Title,
-                    a.Notes,
-                    a.Status,
-                    a.Url,
-                    a.AppliedAt,
-                    a.SalaryMin,
-                    a.SalaryMax,
-                    a.Tags.Select(t => new JobApplicationTagDto(
-                        t.Id, 
-                        t.Name)).ToList()))
-                .ToListAsync(ct);
-
-            return JsonSerializer.Serialize(
-                new PaginatedList<JobApplicationDto>(items, pageNumber, pageSize, totalCount));
+            return JsonSerializer.Serialize(result.Value);
         }
 
         [McpServerTool(Name = "create_job_application", ReadOnly = false, Destructive = false, Idempotent = false)] 
         [Description("Creates job application record")]
         public static async Task<string> CreateApplication(
-            ApplicationDbContext context,
+            IHandler<CreateApplicationCommand, Result<Guid>> handler,
             CancellationToken ct,
             [Description("Short job title")] string title,
             [Description("Current status of the job application record")] JobApplicationStatus status,
@@ -66,24 +47,18 @@ namespace JAT.API.Mcp.Tools
             [Description("Start of the salary range")] decimal? salaryMin = null,
             [Description("End of the salary range")] decimal? salaryMax = null)
         {
-            var application = new JobApplication()
-            {
-                Title = title,
-                Notes = notes,
-                Status = status,
-                Url = url,
-                AppliedAt = appliedAt,
-                SalaryMin = salaryMin,
-                SalaryMax = salaryMax
-            };
+            var command = new CreateApplicationCommand(title, notes, status, url, appliedAt, salaryMin, salaryMax);
 
-            context.JobApplications.Add(application);
-            await context.SaveChangesAsync(ct);
+            var result = await handler.HandleAsync(command, ct);
+
+            if (result.IsFailure)
+            {
+                return JsonSerializer.Serialize(new { error = result.Error?.Description });
+            }
 
             return JsonSerializer.Serialize(new
             {
-                application.Id,
-                application.Status,
+                id = result.Value,
                 message = "Job application created"
             });
         }
