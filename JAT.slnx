@@ -7,7 +7,10 @@
   <Folder Name="/src/">
     <Project Path="src/JAT.API/JAT.API.csproj" Id="c6ae3f9c-bb44-4570-8d8e-474d58c413a9" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="tests/JAT.IntegrationTests/JAT.IntegrationTests.csproj" Id="b2735b65-4c89-44b3-aa97-63bfca1e9ac1" />
+    <Project Path="tests/JAT.UnitTests/JAT.UnitTests.csproj" Id="1cb6eba2-da22-4d8c-99ec-6d96c827b740" />
+  </Folder>
   <Project Path="docker-compose.dcproj">
     <Build />
   </Project>
