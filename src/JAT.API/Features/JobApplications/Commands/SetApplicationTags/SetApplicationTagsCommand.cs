@@ -1,5 +1,7 @@
+using FluentValidation;
 using JAT.API.Common.Abstractions;
 using JAT.API.Common.Models;
+using JAT.API.Extensions;
 using JAT.API.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,13 +9,37 @@ namespace JAT.API.Features.JobApplications.Commands.SetApplicationTags;
 
 public sealed record SetApplicationTagsCommand(Guid ApplicationId, Guid[] TagIds);
 
-public sealed class SetApplicationTagsHandler(ApplicationDbContext context)
+public sealed class SetApplicationTagsValidator : AbstractValidator<SetApplicationTagsCommand>
+{
+    public SetApplicationTagsValidator()
+    {
+        RuleFor(x => x.ApplicationId)
+            .NotEmpty();
+
+        RuleFor(x => x.TagIds)
+            .NotNull()
+            .Must(x => x.Length <= 20);
+
+        RuleForEach(x => x.TagIds)
+            .NotEmpty();
+    }
+}
+
+public sealed class SetApplicationTagsHandler(
+    ApplicationDbContext context,
+    IValidator<SetApplicationTagsCommand> validator)
     : IHandler<SetApplicationTagsCommand, Result>
 {
     public async Task<Result> HandleAsync(
         SetApplicationTagsCommand command,
         CancellationToken ct = default)
     {
+        var validationResult = await validator.ValidateAsync(command, ct);
+        if (!validationResult.IsValid)
+        {
+            return Result.Failure(validationResult.ToValidationError());
+        }
+
         var application = await context.JobApplications
             .Include(a => a.Tags)
             .FirstOrDefaultAsync(a => a.Id == command.ApplicationId, ct);

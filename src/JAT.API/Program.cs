@@ -31,7 +31,7 @@ app.UseExceptionHandler();
 
 if (app.Configuration.GetValue<bool>("Database:MigrateOnStart"))
 {
-    var scope = app.Services.CreateScope();
+    using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await context.Database.MigrateAsync();
 }

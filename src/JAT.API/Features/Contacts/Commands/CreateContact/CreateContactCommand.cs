@@ -1,6 +1,8 @@
+using FluentValidation;
 using JAT.API.Common.Abstractions;
 using JAT.API.Common.Models;
 using JAT.API.Domain.Entities;
+using JAT.API.Extensions;
 using JAT.API.Infrastructure.Persistence;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +15,47 @@ public sealed record CreateContactCommand(
     string Email,
     string? LinkedIn);
 
-public sealed class CreateContactHandler(ApplicationDbContext context)
+public sealed class CreateContactValidator : AbstractValidator<CreateContactCommand>
+{
+    public CreateContactValidator()
+    {
+        RuleFor(c => c.JobApplicationId)
+            .NotEmpty();
+
+        RuleFor(c => c.Name)
+            .NotEmpty()
+            .MaximumLength(100);
+
+        RuleFor(c => c.Email)
+            .NotEmpty()
+            .MaximumLength(100)
+            .EmailAddress();
+
+        RuleFor(c => c.LinkedIn)
+            .MaximumLength(200)
+            .Must(BeUrl)
+            .When(x => !string.IsNullOrWhiteSpace(x.LinkedIn));
+    }
+
+    private static bool BeUrl(string? url) =>
+        Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https";
+}
+
+public sealed class CreateContactHandler(
+    ApplicationDbContext context,
+    IValidator<CreateContactCommand> validator)
     : IHandler<CreateContactCommand, Result<Guid>>
 {
     public async Task<Result<Guid>> HandleAsync(
         CreateContactCommand command,
         CancellationToken ct = default)
     {
+        var validationResult = await validator.ValidateAsync(command, ct);
+        if (!validationResult.IsValid)
+        {
+            return Result.Failure<Guid>(validationResult.ToValidationError());
+        }
+
         var applicationExists = await context.JobApplications
             .AnyAsync(a => a.Id == command.JobApplicationId, ct);
 

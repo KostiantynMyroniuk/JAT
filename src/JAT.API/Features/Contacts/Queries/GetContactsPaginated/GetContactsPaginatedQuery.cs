@@ -1,5 +1,7 @@
+using FluentValidation;
 using JAT.API.Common.Abstractions;
 using JAT.API.Common.Models;
+using JAT.API.Extensions;
 using JAT.API.Features.Contacts.Dtos;
 using JAT.API.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -11,13 +13,33 @@ public sealed record GetContactsPaginatedQuery(
     int PageNumber = 1,
     int PageSize = 10);
 
-public sealed class GetContactsPaginatedHandler(ApplicationDbContext context)
+public sealed class GetContactsPaginatedValidator : AbstractValidator<GetContactsPaginatedQuery>
+{
+    public GetContactsPaginatedValidator()
+    {
+        RuleFor(r => r.PageNumber)
+            .InclusiveBetween(1, 100_000);
+
+        RuleFor(r => r.PageSize)
+            .InclusiveBetween(1, 100);
+    }
+}
+
+public sealed class GetContactsPaginatedHandler(
+    ApplicationDbContext context,
+    IValidator<GetContactsPaginatedQuery> validator)
     : IHandler<GetContactsPaginatedQuery, Result<PaginatedList<ContactDto>>>
 {
     public async Task<Result<PaginatedList<ContactDto>>> HandleAsync(
         GetContactsPaginatedQuery query,
         CancellationToken ct = default)
     {
+        var validationResult = await validator.ValidateAsync(query, ct);
+        if (!validationResult.IsValid)
+        {
+            return Result.Failure<PaginatedList<ContactDto>>(validationResult.ToValidationError());
+        }
+
         var dbQuery = context.Contacts.AsNoTracking();
 
         if (query.JobApplicationId.HasValue)

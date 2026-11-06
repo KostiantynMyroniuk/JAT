@@ -26,10 +26,12 @@ namespace JAT.API.Extensions
                     Detail = error.Description
                 }),
 
-                ErrorType.Validation => TypedResults.ValidationProblem(new Dictionary<string, string[]>
-                {
-                    [error.Code ?? "General"] = [error.Description]
-                }),
+                ErrorType.Validation => error.ValidationErrors is not null
+                    ? TypedResults.ValidationProblem(error.ValidationErrors)
+                    : TypedResults.ValidationProblem(new Dictionary<string, string[]>
+                    {
+                        [error.Code ?? "General"] = [error.Description]
+                    }),
 
                 _ => TypedResults.BadRequest<ProblemDetails>(new()
                 {

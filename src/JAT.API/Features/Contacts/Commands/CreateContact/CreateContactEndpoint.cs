@@ -1,8 +1,6 @@
-using FluentValidation;
 using JAT.API.Common.Abstractions;
 using JAT.API.Common.Models;
 using JAT.API.Extensions;
-using JAT.API.Filters;
 
 namespace JAT.API.Features.Contacts.Commands.CreateContact;
 
@@ -11,32 +9,6 @@ public sealed record CreateContactRequest(
     string Name,
     string Email,
     string? LinkedIn);
-
-public sealed class CreateContactValidator : AbstractValidator<CreateContactRequest>
-{
-    public CreateContactValidator()
-    {
-        RuleFor(c => c.JobApplicationId)
-            .NotEmpty();
-
-        RuleFor(c => c.Name)
-            .NotEmpty()
-            .MaximumLength(100);
-
-        RuleFor(c => c.Email)
-            .NotEmpty()
-            .MaximumLength(100)
-            .EmailAddress();
-
-        RuleFor(c => c.LinkedIn)
-            .MaximumLength(200)
-            .Must(BeUrl)
-            .When(x => !string.IsNullOrWhiteSpace(x.LinkedIn));
-    }
-
-    private static bool BeUrl(string? url) =>
-        Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https";
-}
 
 public sealed class CreateContactEndpoint : IEndpoint
 {
@@ -47,7 +19,6 @@ public sealed class CreateContactEndpoint : IEndpoint
             .WithSummary("Create contact record")
             .WithDescription("Creates contact record for a job application")
             .WithTags("Contacts")
-            .WithValidation<CreateContactRequest>()
             .Produces<Guid>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict)

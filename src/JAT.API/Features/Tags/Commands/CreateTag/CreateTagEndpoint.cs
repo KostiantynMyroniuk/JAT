@@ -1,22 +1,10 @@
-using FluentValidation;
 using JAT.API.Common.Abstractions;
 using JAT.API.Common.Models;
 using JAT.API.Extensions;
-using JAT.API.Filters;
 
 namespace JAT.API.Features.Tags.Commands.CreateTag;
 
 public sealed record CreateTagRequest(string Name);
-
-public sealed class CreateTagValidator : AbstractValidator<CreateTagRequest>
-{
-    public CreateTagValidator()
-    {
-        RuleFor(t => t.Name)
-            .NotEmpty()
-            .MaximumLength(50);
-    }
-}
 
 public sealed class CreateTagEndpoint : IEndpoint
 {
@@ -26,7 +14,6 @@ public sealed class CreateTagEndpoint : IEndpoint
             .WithName("CreateTag")
             .WithSummary("Create tag")
             .WithTags("Tags")
-            .WithValidation<CreateTagRequest>()
             .Produces<Guid>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status409Conflict)
             .ProducesProblem(StatusCodes.Status400BadRequest);

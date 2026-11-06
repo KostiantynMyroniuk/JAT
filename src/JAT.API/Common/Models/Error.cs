@@ -1,7 +1,11 @@
 namespace JAT.API.Common.Models
 {
     public enum ErrorType { Failure, Validation, NotFound, Conflict, Unauthorized }
-    public sealed record Error(string Description, ErrorType ErrorType, string? Code = null)
+    public sealed record Error(
+        string Description,
+        ErrorType ErrorType,
+        string? Code = null,
+        IDictionary<string, string[]>? ValidationErrors = null)
     {
         public static Error NotFound(string description, string? code = null) =>
             new(description, ErrorType.NotFound, code);
@@ -11,6 +15,13 @@ namespace JAT.API.Common.Models
 
         public static Error Validation(string description, string? propertyName = null) =>
             new(description, ErrorType.Validation, propertyName);
+
+        public static Error Validation(IDictionary<string, string[]> validationErrors) =>
+            new(
+                "One or more validation errors occurred.",
+                ErrorType.Validation,
+                null,
+                validationErrors);
 
         public static Error Failure(string description, string? code = null) =>
             new(description, ErrorType.Failure, code);

@@ -1,4 +1,4 @@
-﻿using JAT.API.Common.Models;
+using JAT.API.Common.Models;
 using ModelContextProtocol.Protocol;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -25,6 +25,12 @@ namespace JAT.API.Mcp
             => new() { Content = [new TextContentBlock() { Text = text }] };
 
         public static CallToolResult Error(Error error)
-            => new() { IsError = true, Content = [new TextContentBlock() { Text = error.Description }] };
+        {
+            var message = error.ValidationErrors is not null
+                ? $"{error.Description} {string.Join("; ", error.ValidationErrors.Select(kv => $"{kv.Key}: {string.Join(", ", kv.Value)}"))}"
+                : error.Description;
+
+            return new() { IsError = true, Content = [new TextContentBlock() { Text = message }] };
+        }
     }
 }

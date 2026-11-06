@@ -1,6 +1,8 @@
+using FluentValidation;
 using JAT.API.Common.Abstractions;
 using JAT.API.Common.Models;
 using JAT.API.Domain.Enums;
+using JAT.API.Extensions;
 using JAT.API.Features.JobApplications.Dtos;
 using JAT.API.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -12,13 +14,37 @@ public sealed record GetApplicationsPaginatedQuery(
     int PageNumber = 1,
     int PageSize = 10);
 
-public sealed class GetApplicationsPaginatedHandler(ApplicationDbContext context)
+public sealed class GetApplicationsPaginatedValidator : AbstractValidator<GetApplicationsPaginatedQuery>
+{
+    public GetApplicationsPaginatedValidator()
+    {
+        RuleFor(r => r.PageNumber)
+            .InclusiveBetween(1, 100_000);
+
+        RuleFor(r => r.PageSize)
+            .InclusiveBetween(1, 100);
+
+        RuleFor(r => r.Status)
+            .IsInEnum()
+            .When(r => r.Status.HasValue);
+    }
+}
+
+public sealed class GetApplicationsPaginatedHandler(
+    ApplicationDbContext context,
+    IValidator<GetApplicationsPaginatedQuery> validator)
     : IHandler<GetApplicationsPaginatedQuery, Result<PaginatedList<JobApplicationDto>>>
 {
     public async Task<Result<PaginatedList<JobApplicationDto>>> HandleAsync(
         GetApplicationsPaginatedQuery query,
         CancellationToken ct = default)
     {
+        var validationResult = await validator.ValidateAsync(query, ct);
+        if (!validationResult.IsValid)
+        {
+            return Result.Failure<PaginatedList<JobApplicationDto>>(validationResult.ToValidationError());
+        }
+
         var dbQuery = context.JobApplications.AsNoTracking();
 
         if (query.Status.HasValue)

@@ -1,5 +1,7 @@
+using FluentValidation;
 using JAT.API.Common.Abstractions;
 using JAT.API.Common.Models;
+using JAT.API.Extensions;
 using JAT.API.Infrastructure.Persistence;
 
 namespace JAT.API.Features.Contacts.Commands.UpdateContact;
@@ -10,13 +12,47 @@ public sealed record UpdateContactCommand(
     string Email,
     string? LinkedIn);
 
-public sealed class UpdateContactHandler(ApplicationDbContext context)
+public sealed class UpdateContactValidator : AbstractValidator<UpdateContactCommand>
+{
+    public UpdateContactValidator()
+    {
+        RuleFor(c => c.ContactId)
+            .NotEmpty();
+
+        RuleFor(c => c.Name)
+            .NotEmpty()
+            .MaximumLength(100);
+
+        RuleFor(c => c.Email)
+            .NotEmpty()
+            .MaximumLength(100)
+            .EmailAddress();
+
+        RuleFor(c => c.LinkedIn)
+            .MaximumLength(200)
+            .Must(BeUrl)
+            .When(x => !string.IsNullOrWhiteSpace(x.LinkedIn));
+    }
+
+    private static bool BeUrl(string? url) =>
+        Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https";
+}
+
+public sealed class UpdateContactHandler(
+    ApplicationDbContext context,
+    IValidator<UpdateContactCommand> validator)
     : IHandler<UpdateContactCommand, Result>
 {
     public async Task<Result> HandleAsync(
         UpdateContactCommand command,
         CancellationToken ct = default)
     {
+        var validationResult = await validator.ValidateAsync(command, ct);
+        if (!validationResult.IsValid)
+        {
+            return Result.Failure(validationResult.ToValidationError());
+        }
+
         var contact = await context.Contacts
             .FindAsync([command.ContactId], ct);
 
