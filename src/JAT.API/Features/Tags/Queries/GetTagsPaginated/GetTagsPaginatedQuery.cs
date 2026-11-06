@@ -23,6 +23,7 @@ public sealed class GetTagsPaginatedHandler(ApplicationDbContext context)
 
         var items = await dbQuery
             .OrderBy(t => t.Name)
+            .ThenBy(t => t.Id)
             .Skip((query.PageNumber - 1) * query.PageSize)
             .Take(query.PageSize)
             .Select(t => new TagDto(

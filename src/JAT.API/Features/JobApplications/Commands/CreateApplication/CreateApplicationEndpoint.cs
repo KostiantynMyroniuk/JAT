@@ -36,7 +36,6 @@ public sealed class CreateApplicationValidator : AbstractValidator<CreateApplica
             .When(x => !string.IsNullOrWhiteSpace(x.Url));
 
         RuleFor(a => a.AppliedAt)
-            .NotEmpty()
             .LessThanOrEqualTo(_ => timeProvider.GetUtcNow().AddDays(1));
 
         RuleFor(a => a.SalaryMin)

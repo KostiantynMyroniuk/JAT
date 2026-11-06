@@ -29,6 +29,7 @@ public sealed class GetContactsPaginatedHandler(ApplicationDbContext context)
 
         var items = await dbQuery
             .OrderBy(c => c.Name)
+            .ThenBy(c => c.Id)
             .Skip((query.PageNumber - 1) * query.PageSize)
             .Take(query.PageSize)
             .Select(c => new ContactDto(

@@ -29,7 +29,8 @@ public sealed class GetApplicationsPaginatedHandler(ApplicationDbContext context
         var totalCount = await dbQuery.CountAsync(ct);
 
         var items = await dbQuery
-            .OrderBy(i => i.CreatedAt)
+            .OrderByDescending(i => i.CreatedAt)
+            .ThenBy(i => i.Id)
             .Skip((query.PageNumber - 1) * query.PageSize)
             .Take(query.PageSize)
             .Select(a => new JobApplicationDto(

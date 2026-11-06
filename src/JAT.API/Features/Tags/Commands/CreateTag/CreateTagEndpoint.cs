@@ -45,8 +45,9 @@ public sealed class CreateTagEndpoint : IEndpoint
             return result.ToProblem();
         }
 
-        return TypedResults.Created(
-            "/tags",
-            result.Value);
+        return TypedResults.CreatedAtRoute(
+            result.Value,
+            "GetTagsPaginated",
+            new { tagId = result.Value });
     }
 }
