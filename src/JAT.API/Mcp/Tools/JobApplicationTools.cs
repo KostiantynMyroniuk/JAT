@@ -10,7 +10,6 @@ using JAT.API.Features.JobApplications.Queries.GetApplication;
 using JAT.API.Features.JobApplications.Queries.GetApplicationsPaginated;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
-using System.Text.Json;
 
 namespace JAT.API.Mcp.Tools
 {
@@ -19,7 +18,7 @@ namespace JAT.API.Mcp.Tools
     {
         [McpServerTool(Name = "get_job_applications", ReadOnly = true)] 
         [Description("Gets paginated list of job applications with current statuses and tags")]
-        public static async Task<string> GetApplications(
+        public static async Task<CallToolResult> GetApplications(
             IHandler<GetApplicationsPaginatedQuery, Result<PaginatedList<JobApplicationDto>>> handler,
             CancellationToken ct,
             [Description("Page number, default = 1")] int pageNumber = 1,
@@ -30,17 +29,12 @@ namespace JAT.API.Mcp.Tools
 
             var result = await handler.HandleAsync(query, ct);
 
-            if (result.IsFailure)
-            {
-                return JsonSerializer.Serialize(new { error = result.Error?.Description });
-            }
-
-            return JsonSerializer.Serialize(result.Value);
+            return result.ToToolResult();
         }
 
         [McpServerTool(Name = "get_job_application", ReadOnly = true)]
         [Description("Gets details of a specific job application by its ID, including its tags")]
-        public static async Task<string> GetApplication(
+        public static async Task<CallToolResult> GetApplication(
             IHandler<GetApplicationQuery, Result<JobApplicationDto>> handler,
             CancellationToken ct,
             [Description("Unique identifier of the job application")] Guid id)
@@ -49,17 +43,12 @@ namespace JAT.API.Mcp.Tools
 
             var result = await handler.HandleAsync(query, ct);
 
-            if (result.IsFailure)
-            {
-                return JsonSerializer.Serialize(new { error = result.Error?.Description });
-            }
-
-            return JsonSerializer.Serialize(result.Value);
+            return result.ToToolResult();
         }
 
         [McpServerTool(Name = "create_job_application", ReadOnly = false, Destructive = false, Idempotent = false)] 
         [Description("Creates job application record")]
-        public static async Task<string> CreateApplication(
+        public static async Task<CallToolResult> CreateApplication(
             IHandler<CreateApplicationCommand, Result<Guid>> handler,
             CancellationToken ct,
             [Description("Short job title")] string title,
@@ -74,21 +63,12 @@ namespace JAT.API.Mcp.Tools
 
             var result = await handler.HandleAsync(command, ct);
 
-            if (result.IsFailure)
-            {
-                return JsonSerializer.Serialize(new { error = result.Error?.Description });
-            }
-
-            return JsonSerializer.Serialize(new
-            {
-                id = result.Value,
-                message = "Job application created"
-            });
+            return result.ToToolResult(id => $"Job application: '{id}' created");
         }
 
         [McpServerTool(Name = "update_job_application", ReadOnly = false, Destructive = false, Idempotent = true)]
         [Description("Updates an existing job application record")]
-        public static async Task<string> UpdateApplication(
+        public static async Task<CallToolResult> UpdateApplication(
             IHandler<UpdateApplicationCommand, Result> handler,
             CancellationToken ct,
             [Description("Unique identifier of the job application to update")] Guid id,
@@ -104,21 +84,12 @@ namespace JAT.API.Mcp.Tools
 
             var result = await handler.HandleAsync(command, ct);
 
-            if (result.IsFailure)
-            {
-                return JsonSerializer.Serialize(new { error = result.Error?.Description });
-            }
-
-            return JsonSerializer.Serialize(new
-            {
-                id,
-                message = "Job application updated"
-            });
+            return result.ToToolResult($"Job application: '{id}' updated");
         }
 
         [McpServerTool(Name = "delete_job_application", ReadOnly = false, Destructive = true, Idempotent = true)]
         [Description("Deletes a job application record by its ID")]
-        public static async Task<string> DeleteApplication(
+        public static async Task<CallToolResult> DeleteApplication(
             IHandler<DeleteApplicationCommand, Result> handler,
             CancellationToken ct,
             [Description("Unique identifier of the job application to delete")] Guid id)
@@ -127,21 +98,12 @@ namespace JAT.API.Mcp.Tools
 
             var result = await handler.HandleAsync(command, ct);
 
-            if (result.IsFailure)
-            {
-                return JsonSerializer.Serialize(new { error = result.Error?.Description });
-            }
-
-            return JsonSerializer.Serialize(new
-            {
-                id,
-                message = "Job application deleted"
-            });
+            return result.ToToolResult($"Job application: '{id}' deleted");
         }
 
         [McpServerTool(Name = "set_job_application_tags", ReadOnly = false, Destructive = false, Idempotent = true)]
         [Description("Sets or replaces the tags associated with a job application")]
-        public static async Task<string> SetApplicationTags(
+        public static async Task<CallToolResult> SetApplicationTags(
             IHandler<SetApplicationTagsCommand, Result> handler,
             CancellationToken ct,
             [Description("Unique identifier of the job application")] Guid id,
@@ -151,16 +113,7 @@ namespace JAT.API.Mcp.Tools
 
             var result = await handler.HandleAsync(command, ct);
 
-            if (result.IsFailure)
-            {
-                return JsonSerializer.Serialize(new { error = result.Error?.Description });
-            }
-
-            return JsonSerializer.Serialize(new
-            {
-                id,
-                message = "Job application tags updated"
-            });
+            return result.ToToolResult($"Tags for job application: '{id}' updated");
         }
     }
 }
