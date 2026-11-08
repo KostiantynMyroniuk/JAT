@@ -24,10 +24,17 @@ namespace JAT.API.Extensions
 
         public static WebApplication UseOpenApiDocumentation(this WebApplication app)
         {
-            app.MapOpenApi().WithDocumentPerVersion();
+            app.MapOpenApi()
+                .WithDocumentPerVersion();
+
             app.UseSwaggerUI(o =>
             {
-                o.SwaggerEndpoint("/openapi/v1.json", "v1");
+                foreach (var description in app.DescribeApiVersions())
+                {
+                    o.SwaggerEndpoint(
+                        $"/openapi/{description.GroupName}.json",
+                        description.GroupName);
+                }
             });
 
             return app;

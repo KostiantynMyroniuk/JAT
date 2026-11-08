@@ -1,4 +1,4 @@
-﻿using JAT.API.Domain.Enums;
+using JAT.API.Domain.Enums;
 
 namespace JAT.API.Domain.Entities
 {
@@ -16,6 +16,18 @@ namespace JAT.API.Domain.Entities
         public Interview()
         {
             Id = Guid.CreateVersion7();
+        }
+
+        public void Update(
+            InterviewType interviewType,
+            DateTimeOffset scheduledAt,
+            string? location,
+            string? notes)
+        {
+            InterviewType = interviewType;
+            ScheduledAt = scheduledAt;
+            Location = location;
+            Notes = notes;
         }
     }
 }
