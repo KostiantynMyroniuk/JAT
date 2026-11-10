@@ -18,7 +18,6 @@ builder.Services
     .AddProblemDetails()
     .AddPersistence(builder.Configuration)
     .AddCustomHealthChecks()
-    .AddOpenApiDocumentation()
     .AddVersioning()
     .AddEndpoints(typeof(Program).Assembly)
     .AddHandlers(typeof(Program).Assembly)
