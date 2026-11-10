@@ -14,5 +14,15 @@
         {
             Id = Guid.CreateVersion7();
         }
+
+        public void Update(
+            string name,
+            string email,
+            string? linkedIn)
+        {
+            Name = name; 
+            Email = email; 
+            LinkedIn = linkedIn;
+        }
     }
 }

@@ -9,15 +9,25 @@ namespace JAT.API.Infrastructure.ExceptionHandling
     {
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
+            if (exception is OperationCanceledException && httpContext.RequestAborted.IsCancellationRequested)
+            {
+                logger.LogInformation("Request cancelled by user. {Method} {Path}. TraceId: {TraceId}",
+                    httpContext.Request.Method, httpContext.Request.Path, httpContext.TraceIdentifier);
+
+                return true;
+            }
+
             var (statusCode, title) = exception switch
             {
                 _ => (StatusCodes.Status500InternalServerError, "Internal server error")
             };
 
             if (statusCode >= StatusCodes.Status500InternalServerError)
-                logger.LogError(exception, "Unhandled exception");
+                logger.LogError(exception, "Unhandled exception. {Method} {Path} -> {StatusCode}. TraceId: {TraceId}",
+                    httpContext.Request.Method, httpContext.Request.Path, statusCode, httpContext.TraceIdentifier);
             else
-                logger.LogWarning("Handled exception: {Message}", exception.Message);
+                logger.LogWarning(exception, "Handled exception {ExceptionType}: {Message}. {Method} {Path} -> {StatusCode}. TraceId: {TraceId}", 
+                    exception.GetType().Name, exception.Message, httpContext.Request.Method, httpContext.Request.Path, statusCode, httpContext.TraceIdentifier);
 
             httpContext.Response.StatusCode = statusCode;
 
@@ -28,7 +38,8 @@ namespace JAT.API.Infrastructure.ExceptionHandling
                 {
                     Status = statusCode,
                     Title = title,
-                    Instance = httpContext.Request.Path
+                    Instance = httpContext.Request.Path,
+                    Extensions = { ["traceId"] = httpContext.TraceIdentifier }
                 }
             });
         }

@@ -62,9 +62,10 @@ public sealed class UpdateContactHandler(
                 Error.NotFound($"Contact: {command.ContactId} not found"));
         }
 
-        contact.Name = command.Name;
-        contact.Email = command.Email;
-        contact.LinkedIn = command.LinkedIn;
+        contact.Update(
+            command.Name,
+            command.Email,
+            command.LinkedIn);
 
         await context.SaveChangesAsync(ct);
 
