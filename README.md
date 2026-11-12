@@ -13,9 +13,10 @@ Job Application Tracker with Model Context Protocol support.
 
 ## Features
 
-- Track job applications, statuses and salary ranges
-- Store recruiter and company contact details
+- Track job applications, interviews and salary ranges
+- Store recruiter contact details
 - Manage application tags
+- Look for all records statistics
 - MCP tools for AI assistants
 - Swagger UI API documentation
 - Health checks for monitoring
