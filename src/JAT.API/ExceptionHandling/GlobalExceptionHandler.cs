@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace JAT.API.Infrastructure.ExceptionHandling
+namespace JAT.API.ExceptionHandling
 {
     public class GlobalExceptionHandler(
         IProblemDetailsService problemDetailsService,

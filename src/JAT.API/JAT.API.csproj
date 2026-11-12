@@ -11,6 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<PackageReference Include="Azure.Identity" />
+	<PackageReference Include="Azure.Messaging.ServiceBus" />
 	<PackageReference Include="FluentValidation" />
     <PackageReference Include="Asp.Versioning.Http" />
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
@@ -31,6 +33,7 @@
   <ItemGroup>
     <Folder Include="Features\Analytics\Dtos\" />
     <Folder Include="Infrastructure\Persistence\Migrations\" />
+    <Folder Include="Mcp\Prompts\" />
   </ItemGroup>
 
 </Project>

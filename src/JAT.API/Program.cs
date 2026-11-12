@@ -1,7 +1,8 @@
 using System.Text.Json.Serialization;
 using FluentValidation;
+using JAT.API.ExceptionHandling;
 using JAT.API.Extensions;
-using JAT.API.Infrastructure.ExceptionHandling;
+using JAT.API.Infrastructure.Messaging;
 using JAT.API.Infrastructure.Persistence;
 using JAT.API.Mcp;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,8 @@ builder.Services
     .AddEndpoints(typeof(Program).Assembly)
     .AddHandlers(typeof(Program).Assembly)
     .AddValidatorsFromAssemblyContaining<Program>()
-    .AddMcpServices();
+    .AddMcpServices()
+    .AddServiceBusConfigurations(builder.Configuration);
 
 var app = builder.Build();
 

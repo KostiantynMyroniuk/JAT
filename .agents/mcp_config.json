@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "jat-api": {
+      "url": "http://localhost:5082/mcp"
+    }
+  }
+}

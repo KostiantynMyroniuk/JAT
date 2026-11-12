@@ -1,5 +1,6 @@
 using FluentValidation;
 using JAT.API.Common.Abstractions;
+using JAT.API.Common.Events;
 using JAT.API.Common.Models;
 using JAT.API.Domain.Entities;
 using JAT.API.Domain.Enums;
@@ -39,7 +40,8 @@ public sealed class CreateInterviewValidator : AbstractValidator<CreateInterview
 
 public sealed class CreateInterviewHandler(
     ApplicationDbContext context,
-    IValidator<CreateInterviewCommand> validator)
+    IValidator<CreateInterviewCommand> validator,
+    IEventPublisher eventPublisher)
     : IHandler<CreateInterviewCommand, Result<Guid>>
 {
     public async Task<Result<Guid>> HandleAsync(
@@ -52,10 +54,10 @@ public sealed class CreateInterviewHandler(
             return Result.Failure<Guid>(validationResult.ToValidationError());
         }
 
-        var applicationExists = await context.JobApplications
-            .AnyAsync(a => a.Id == command.JobApplicationId, ct);
+        var application = await context.JobApplications
+            .FirstOrDefaultAsync(a => a.Id == command.JobApplicationId, ct);
 
-        if (!applicationExists)
+        if (application == null)
         {
             return Result.Failure<Guid>(
                 Error.NotFound($"Application: {command.JobApplicationId} not found"));
@@ -72,6 +74,9 @@ public sealed class CreateInterviewHandler(
 
         context.Interviews.Add(interview);
         await context.SaveChangesAsync(ct);
+
+        await eventPublisher.PublishAsync(
+            new InterviewCreatedEvent(application.Title, interview.ScheduledAt));
 
         return Result.Success(interview.Id);
     }

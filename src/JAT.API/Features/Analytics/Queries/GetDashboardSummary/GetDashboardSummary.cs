@@ -92,7 +92,7 @@ namespace JAT.API.Features.Analytics.Queries.GetDashboardSummary
 
             return await context.Interviews
                 .AsNoTracking()
-                .Where(i => i.ScheduledAt <= utcNow)
+                .Where(i => i.ScheduledAt >= utcNow)
                 .OrderBy(i => i.ScheduledAt)
                 .Take(5)
                 .Select(i => new UpcomingInterviewDto(
