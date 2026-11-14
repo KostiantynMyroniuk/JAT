@@ -36,4 +36,8 @@
     <Folder Include="Mcp\Prompts\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\JAT.Shared\JAT.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -4,7 +4,8 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "jat.api": "StartDebugging"
+        "jat.api": "StartDebugging",
+        "notifications.worker": "StartDebugging"
       }
     }
   }

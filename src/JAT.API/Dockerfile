@@ -8,6 +8,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Directory.Packages.props", "."]
 COPY ["src/JAT.API/JAT.API.csproj", "src/JAT.API/"]
+COPY ["src/JAT.Shared/JAT.Shared.csproj", "src/JAT.Shared/"]
 RUN dotnet restore "./src/JAT.API/JAT.API.csproj"
 COPY . .
 WORKDIR "/src/src/JAT.API"

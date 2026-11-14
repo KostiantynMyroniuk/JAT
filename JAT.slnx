@@ -6,6 +6,8 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/JAT.API/JAT.API.csproj" Id="c6ae3f9c-bb44-4570-8d8e-474d58c413a9" />
+    <Project Path="src/JAT.Shared/JAT.Shared.csproj" Id="39ab3260-0551-4427-af2f-b3e0d58340c6" />
+    <Project Path="src/Notifications.Worker/Notifications.Worker.csproj" Id="e30c203a-9af3-4145-8059-2c6971483162" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/JAT.IntegrationTests/JAT.IntegrationTests.csproj" Id="b2735b65-4c89-44b3-aa97-63bfca1e9ac1" />

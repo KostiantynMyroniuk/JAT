@@ -6,8 +6,6 @@ using System.Text.Json;
 
 namespace JAT.API.Infrastructure.Messaging.ServiceBus
 {
-    public sealed record ApplicationCreatedEvent();
-
     public class EventPublisher(
         ServiceBusClient serviceBusClient,
         IEventDestinationResolver eventDestinationResolver) : IEventPublisher, IAsyncDisposable

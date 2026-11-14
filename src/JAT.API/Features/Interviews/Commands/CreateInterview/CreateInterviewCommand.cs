@@ -1,11 +1,11 @@
 using FluentValidation;
 using JAT.API.Common.Abstractions;
-using JAT.API.Common.Events;
 using JAT.API.Common.Models;
 using JAT.API.Domain.Entities;
 using JAT.API.Domain.Enums;
 using JAT.API.Extensions;
 using JAT.API.Infrastructure.Persistence;
+using JAT.Shared.Events;
 using Microsoft.EntityFrameworkCore;
 
 namespace JAT.API.Features.Interviews.Commands.CreateInterview;

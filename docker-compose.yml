@@ -1,18 +1,4 @@
 services:
-  jat.api:
-    build:
-      context: .
-      dockerfile: src/JAT.API/Dockerfile
-    depends_on:
-      mssql:
-        condition: service_healthy
-    environment:
-      ConnectionStrings__JatDb: "Server=mssql,1433;Database=JatDb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True"
-      ConnectionStrings__ServiceBus: ${AZURE_SERVICE_BUS_STRING}
-      Database__MigrateOnStart: "true"
-    ports:
-      - "8080:8080"
-
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: jat-mssql
@@ -31,6 +17,30 @@ services:
       retries: 12
       start_period: 40s
     restart: unless-stopped
+
+  jat.api:
+    build:
+      context: .
+      dockerfile: src/JAT.API/Dockerfile
+    depends_on:
+      mssql:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__JatDb: "Server=mssql,1433;Database=JatDb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__ServiceBus: ${AZURE_SERVICE_BUS_STRING}
+      Database__MigrateOnStart: "true"
+    ports:
+      - "8080:8080"
+
+  notifications.worker:
+    build:
+      context: .
+      dockerfile: src/Notifications.Worker/Dockerfile
+    depends_on:
+      jat.api:
+        condition: service_started
+    environment:
+      ConnectionStrings__ServiceBus: ${AZURE_SERVICE_BUS_STRING}
 
 volumes:
   mssql-data:
