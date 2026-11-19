@@ -1,18 +1,24 @@
 ﻿using JAT.Shared.Events;
-using Notifications.Worker.Common.Abstractions;
+using Notifications.Worker.Common.Email;
+using Notifications.Worker.Common.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Notifications.Worker.Features.Interviews
 {
-    public class InterviewCreatedEventHandler : IEventHandler<InterviewCreatedEvent>
+    public class InterviewCreatedEventHandler(
+        IEmailSender emailSender) : IEventHandler<InterviewCreatedEvent>
     {
-        public Task HandleAsync(InterviewCreatedEvent evt, CancellationToken ct)
+        public async Task HandleAsync(InterviewCreatedEvent evt, CancellationToken ct)
         {
-            Console.WriteLine($"Event '{typeof(InterviewCreatedEvent).Name}' has been successfully handled. Props: {evt.ApplicationTitle}, {evt.SheduledAt}");
+            var message = new EmailMessage(
+                evt.To,
+                "Interview created",
+                $"<h1> Interview for {evt.ApplicationTitle} created",
+                null);
 
-            return Task.CompletedTask;
+            await emailSender.SendAsync(message, ct);
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Notifications.Worker.Common.Abstractions
+namespace Notifications.Worker.Common.Messaging
 {
     public interface IEventHandler<in TEvent>
     {

@@ -75,8 +75,9 @@ public sealed class CreateInterviewHandler(
         context.Interviews.Add(interview);
         await context.SaveChangesAsync(ct);
 
+        //do not forget to change an email after profile will be added 
         await eventPublisher.PublishAsync(
-            new InterviewCreatedEvent(application.Title, interview.ScheduledAt));
+            new InterviewCreatedEvent("example@gmail.com", application.Title, interview.ScheduledAt));
 
         return Result.Success(interview.Id);
     }

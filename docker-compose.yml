@@ -41,6 +41,11 @@ services:
         condition: service_started
     environment:
       ConnectionStrings__ServiceBus: ${AZURE_SERVICE_BUS_STRING}
+      Email__Host: ${SMTP_HOST}
+      Email__Port: ${SMTP_PORT}
+      Email__FromEmail: ${FROM_EMAIL}
+      Email__FromName: ${FROM_NAME}
+      Email__AppPassword: ${APP_PASSWORD}
 
 volumes:
   mssql-data:

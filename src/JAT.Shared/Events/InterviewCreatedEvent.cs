@@ -4,5 +4,5 @@ using System.Text;
 
 namespace JAT.Shared.Events
 {
-    public record InterviewCreatedEvent(string ApplicationTitle, DateTimeOffset SheduledAt);
+    public record InterviewCreatedEvent(string To, string ApplicationTitle, DateTimeOffset SheduledAt);
 }

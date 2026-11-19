@@ -1,7 +1,7 @@
 ﻿using Azure.Identity;
 using Azure.Messaging.ServiceBus;
 using JAT.Shared.Events;
-using Notifications.Worker.Common.Abstractions;
+using Notifications.Worker.Common.Messaging;
 using Notifications.Worker.Features.Interviews;
 using Notifications.Worker.Infrastructure.Messaging.ServiceBus;
 using Notifications.Worker.Infrastructure.Messaging.ServiceBus.Processors;
