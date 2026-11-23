@@ -73,11 +73,13 @@ public sealed class CreateInterviewHandler(
         };
 
         context.Interviews.Add(interview);
-        await context.SaveChangesAsync(ct);
 
-        //do not forget to change an email after profile will be added 
+        //do not forget to change an email after profile will be added
+        //outbox publish
         await eventPublisher.PublishAsync(
             new InterviewCreatedEvent("example@gmail.com", application.Title, interview.ScheduledAt));
+
+        await context.SaveChangesAsync(ct);
 
         return Result.Success(interview.Id);
     }

@@ -148,6 +148,41 @@ namespace JAT.API.Infrastructure.Persistence.Migrations
                     b.ToTable("Tags", "jat");
                 });
 
+            modelBuilder.Entity("JAT.API.Infrastructure.Messaging.Outbox.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Error")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("OccuredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OccuredAt", "ProcessedAt");
+
+                    b.ToTable("OutboxMessages", "jat");
+                });
+
             modelBuilder.Entity("JobApplicationTag", b =>
                 {
                     b.Property<Guid>("JobApplicationId")

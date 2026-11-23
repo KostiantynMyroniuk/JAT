@@ -23,8 +23,15 @@ builder.Services
     .AddEndpoints(typeof(Program).Assembly)
     .AddHandlers(typeof(Program).Assembly)
     .AddValidatorsFromAssemblyContaining<Program>()
-    .AddMcpServices()
-    .AddServiceBusConfigurations(builder.Configuration);
+    .AddMcpServices();
+
+builder.Services.AddServiceBus(o =>
+{
+    o.AddOutbox<ApplicationDbContext>(o =>
+    {
+        o.PollingInterval = TimeSpan.FromSeconds(5);
+    });
+});
 
 var app = builder.Build();
 

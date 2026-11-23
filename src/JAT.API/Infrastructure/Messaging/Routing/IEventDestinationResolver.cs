@@ -2,6 +2,6 @@
 {
     public interface IEventDestinationResolver
     {
-        string Resolve<T>() where T : class;
+        string Resolve(string eventType);
     }
 }

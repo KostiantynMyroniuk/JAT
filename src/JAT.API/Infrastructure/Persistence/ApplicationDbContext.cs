@@ -1,4 +1,5 @@
 ﻿using JAT.API.Domain.Entities;
+using JAT.API.Infrastructure.Messaging.Outbox;
 using Microsoft.EntityFrameworkCore;
 
 namespace JAT.API.Infrastructure.Persistence
@@ -14,6 +15,7 @@ namespace JAT.API.Infrastructure.Persistence
         {
             modelBuilder.HasDefaultSchema("jat");
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            modelBuilder.AddOutboxEntities();
         }
     }
 }

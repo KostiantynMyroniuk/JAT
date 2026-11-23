@@ -12,5 +12,13 @@ namespace JAT.API.Infrastructure.Messaging.Routing
 
             throw new InvalidOperationException($"Queue/topic for event '{typeof(T).Name}' is not configured");
         }
+
+        public string Resolve(string eventType)
+        {
+            if (options.Value.Destinations.TryGetValue(eventType, out var destination))
+                return destination;
+
+            throw new InvalidOperationException($"Queue/topic for event '{eventType}' is not configured");
+        }
     }
 }

@@ -1,32 +1,31 @@
 ﻿using Azure.Messaging.ServiceBus;
 using JAT.API.Common.Abstractions;
+using JAT.API.Infrastructure.Messaging.Abstractions;
 using JAT.API.Infrastructure.Messaging.Routing;
 using System.Collections.Concurrent;
-using System.Text.Json;
 
 namespace JAT.API.Infrastructure.Messaging.ServiceBus
 {
-    public class EventPublisher(
+    public class ServiceBusMessageTransport(
         ServiceBusClient serviceBusClient,
-        IEventDestinationResolver eventDestinationResolver) : IEventPublisher, IAsyncDisposable
+        IEventDestinationResolver eventDestinationResolver) : IMessageTransport, IAsyncDisposable
     {
-        private static readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
         private readonly ConcurrentDictionary<string, ServiceBusSender> _senders = new();
 
-        public async Task PublishAsync<T>(T eventRecord, CancellationToken ct = default) where T : class
+        public async Task SendAsync(OutboundMessage message, CancellationToken ct = default)
         {
-            var destination = eventDestinationResolver.Resolve<T>();
+            var destination = eventDestinationResolver.Resolve(message.Type);
 
             var sender = _senders.GetOrAdd(destination, serviceBusClient.CreateSender);
 
-            var message = new ServiceBusMessage(JsonSerializer.Serialize(eventRecord, jsonSerializerOptions))
+            var busMessage = new ServiceBusMessage(message.Payload)
             {
-                MessageId = Guid.NewGuid().ToString(),
+                MessageId = message.MessageId.ToString(),
                 ContentType = "application/json",
-                Subject = typeof(T).Name
+                Subject = message.Type
             };
 
-            await sender.SendMessageAsync(message, ct);
+            await sender.SendMessageAsync(busMessage, ct);
         }
 
         public async ValueTask DisposeAsync()
